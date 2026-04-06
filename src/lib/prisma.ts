@@ -1,4 +1,3 @@
-import fs from "node:fs";
 import path from "node:path";
 import { PrismaClient } from "@prisma/client";
 
@@ -9,15 +8,6 @@ const globalForPrisma = globalThis as unknown as {
 const resolveDatabaseUrl = () => {
   const rawUrl = process.env.DATABASE_URL;
   if (!rawUrl) return undefined;
-
-  if (process.env.VERCEL) {
-    const tmpDbPath = path.join("/tmp", "lunor.db");
-    const seedPath = path.join(process.cwd(), "prisma", "dev.db");
-    if (!fs.existsSync(tmpDbPath) && fs.existsSync(seedPath)) {
-      fs.copyFileSync(seedPath, tmpDbPath);
-    }
-    return `file:${tmpDbPath}`;
-  }
 
   if (rawUrl.startsWith("file:./")) {
     const relative = rawUrl.replace("file:./", "");
