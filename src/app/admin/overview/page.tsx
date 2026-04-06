@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { formatPrice } from "@/lib/format";
@@ -64,7 +64,7 @@ const formatDate = (value: string) =>
     timeStyle: "short",
   });
 
-export default function AdminOverviewPage() {
+function AdminOverviewPageContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token") ?? "";
   const [overview, setOverview] = useState<Overview>(emptyOverview);
@@ -382,5 +382,19 @@ export default function AdminOverviewPage() {
         <p className="mt-6 text-sm text-[var(--umber)]">{status}</p>
       ) : null}
     </main>
+  );
+}
+
+export default function AdminOverviewPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="mx-auto max-w-6xl px-6 py-16">
+          <p className="text-sm text-[var(--umber)]">Loading admin overview...</p>
+        </main>
+      }
+    >
+      <AdminOverviewPageContent />
+    </Suspense>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
@@ -136,7 +136,7 @@ const defaultHomepage: HomepageContent = {
     "Every piece is inspected, delivered by white-glove teams, and supported by on-call service for five years.",
 };
 
-export default function AdminPage() {
+function AdminPageContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token") ?? "";
 
@@ -1174,5 +1174,19 @@ export default function AdminPage() {
         <p className="mt-6 text-sm text-[var(--umber)]">{status}</p>
       ) : null}
     </main>
+  );
+}
+
+export default function AdminPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="mx-auto max-w-6xl px-6 py-16">
+          <p className="text-sm text-[var(--umber)]">Loading admin panel...</p>
+        </main>
+      }
+    >
+      <AdminPageContent />
+    </Suspense>
   );
 }

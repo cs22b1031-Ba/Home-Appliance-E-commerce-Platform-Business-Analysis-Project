@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { formatPrice } from "@/lib/format";
@@ -32,7 +32,7 @@ type Order = {
   } | null;
 };
 
-export default function AdminOrdersPage() {
+function AdminOrdersPageContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token") ?? "";
   const [orders, setOrders] = useState<Order[]>([]);
@@ -230,5 +230,19 @@ export default function AdminOrdersPage() {
         <p className="mt-6 text-sm text-[var(--umber)]">{status}</p>
       ) : null}
     </main>
+  );
+}
+
+export default function AdminOrdersPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="mx-auto max-w-6xl px-6 py-16">
+          <p className="text-sm text-[var(--umber)]">Loading admin orders...</p>
+        </main>
+      }
+    >
+      <AdminOrdersPageContent />
+    </Suspense>
   );
 }
